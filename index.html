@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Josh The Official — Music Producer | Artist | Rapper/Singer | Beat Maker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:'Inter',sans-serif;background:#050505;color:#e5e5e5;overflow-x:hidden}
+
+        /* HERO BACKGROUND — Fixed fullscreen, no zoom/duplicate */
+        .hero-bg{
+            background:url('Joshtheofficial00.png') center center / cover no-repeat fixed;
+            min-height:100vh;width:100%;position:relative;
+        }
+        /* Fallback gradient if image doesn't load */
+        .hero-bg::after{
+            content:'';position:absolute;inset:0;
+            background:linear-gradient(135deg,#0a0a1a 0%,#050510 50%,#0a0510 100%);
+            z-index:0;
+        }
+        .hero-bg::before{
+            content:'';position:absolute;inset:0;z-index:1;
+            background:linear-gradient(to bottom,rgba(5,5,5,0.15) 0%,rgba(5,5,5,0.35) 35%,rgba(5,5,5,0.88) 75%,#050505 100%);
+        }
+        /* When image loads, hide the fallback */
+        .hero-bg.img-loaded::after{opacity:0}
+
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        @keyframes progressFill{from{width:0%}}
+        @keyframes eq-bar{0%,100%{height:8px}50%{height:100%}}
+        @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+        @keyframes breathe{0%,100%{opacity:.5}50%{opacity:1}}
+        @keyframes profilePulse{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,0.4)}50%{box-shadow:0 0 0 10px rgba(59,130,246,0)}}
+        @keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+        .anim-fiu{animation:fadeInUp .8s cubic-bezier(.16,1,.3,1) forwards;opacity:0}
+        .d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+        .d4{animation-delay:.4s}.d5{animation-delay:.5s}.d6{animation-delay:.6s}
+        .d7{animation-delay:.7s}.d8{animation-delay:.8s}
+
+        .reveal{opacity:0;transform:translateY(30px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+
+        .progress-track{background:rgba(255,255,255,.05);border-radius:999px;overflow:hidden;height:8px}
+        .progress-fill{height:100%;border-radius:999px;transition:width 1.2s cubic-bezier(.16,1,.3,1);position:relative}
+        .progress-fill::after{content:'';position:absolute;right:-2px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:inherit;box-shadow:0 0 10px currentColor}
+
+        .eq-bar{width:3px;background:linear-gradient(to top,#3b82f6,#a855f7);border-radius:2px;animation:eq-bar .8s ease-in-out infinite}
+        .marquee-track{display:flex;animation:marquee 30s linear infinite;width:max-content}
+
+        .glass{background:rgba(255,255,255,.03);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);transition:all .3s}
+        .glass:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+
+        .stat-number{text-shadow:0 0 25px rgba(59,130,246,.35)}
+        .nav-blur{backdrop-filter:blur(24px);background:rgba(5,5,5,.75);border-bottom:1px solid rgba(255,255,255,.05)}
+        .live-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:breathe 2s ease-in-out infinite;display:inline-block}
+
+        .shimmer-text{background:linear-gradient(90deg,#3b82f6,#a855f7,#3b82f6);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite}
+
+        .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);backdrop-filter:blur(12px);padding:14px 28px;border-radius:999px;color:#93c5fd;font-size:14px;font-weight:500;z-index:9999;transition:transform .5s cubic-bezier(.16,1,.3,1);pointer-events:none}
+        .toast.show{transform:translateX(-50%) translateY(0)}
+
+        .mobile-menu{transform:translateY(-20px);opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.16,1,.3,1)}
+        .mobile-menu.open{transform:translateY(0);opacity:1;pointer-events:all}
+
+        .goal-ring{position:relative;width:200px;height:200px}
+        .goal-ring svg{transform:rotate(-90deg)}
+        .goal-ring-bg{stroke:rgba(255,255,255,.05)}
+        .goal-ring-fill{stroke:url(#ringGrad);stroke-linecap:round;transition:stroke-dashoffset 2s cubic-bezier(.16,1,.3,1)}
+
+        .profile-img{animation:profilePulse 3s ease-in-out infinite}
+
+        /* Profile image container — ensures no oversized images */
+        .profile-container{width:120px;height:120px;border-radius:50%;overflow:hidden;border:3px solid rgba(59,130,246,.3);flex-shrink:0;position:relative;background:linear-gradient(135deg,#1a1a2e,#16213e)}
+        .profile-container img{width:100%;height:100%;object-fit:cover;display:block}
+        .profile-container-sm{width:40px;height:40px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1);flex-shrink:0;background:linear-gradient(135deg,#1a1a2e,#16213e)}
+        .profile-container-sm img{width:100%;height:100%;object-fit:cover;display:block}
+        .profile-container-md{width:100%;aspect-ratio:1;border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,.05);background:linear-gradient(135deg,#1a1a2e,#16213e);position:relative}
+        .profile-container-md img{width:100%;height:100%;object-fit:cover;display:block}
+        .profile-container-xs{width:32px;height:32px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.1);flex-shrink:0;background:linear-gradient(135deg,#1a1a2e,#16213e)}
+        .profile-container-xs img{width:100%;height:100%;object-fit:cover;display:block}
+
+        /* Fallback initials if image fails */
+        .profile-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#3b82f6;background:linear-gradient(135deg,#0a0a1a,#111827);z-index:1}
+        .profile-container img[src]~.profile-fallback,
+        .profile-container-sm img[src]~.profile-fallback,
+        .profile-container-md img[src]~.profile-fallback,
+        .profile-container-xs img[src]~.profile-fallback{display:none}
+
+        ::-webkit-scrollbar{width:5px}
+        ::-webkit-scrollbar-track{background:#050505}
+        ::-webkit-scrollbar-thumb{background:#262626;border-radius:3px}
+    </style>
+</head>
+<body>
+
+<div id="toast" class="toast">Thanks for your support! 🎵</div>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav-blur fixed top-0 w-full z-50">
+    <div class="max-w-7xl mx-auto px-5 py-3.5 flex items-center justify-between">
+        <a href="#" class="flex items-center gap-2.5 group">
+            <div class="profile-container-sm">
+                <img src="myface.png" alt="Josh" onerror="this.style.display='none'">
+                <div class="profile-fallback text-xs">J</div>
+            </div>
+            <span class="text-white font-semibold text-base tracking-tight hidden sm:block">Josh<span class="text-blue-400">TheOfficial</span></span>
+        </a>
+        <div class="hidden md:flex items-center gap-7">
+            <a href="#home" class="text-[13px] text-neutral-400 hover:text-white transition-colors">Home</a>
+            <a href="#about" class="text-[13px] text-neutral-400 hover:text-white transition-colors">About</a>
+            <a href="#stats" class="text-[13px] text-neutral-400 hover:text-white transition-colors">Progress</a>
+            <a href="#services" class="text-[13px] text-neutral-400 hover:text-white transition-colors">Services</a>
+            <a href="#connect" class="text-[13px] text-neutral-400 hover:text-white transition-colors">Connect</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="https://youtube.com/@joshtheofficial00?si=TkEWzNWCf7HlI-U1?sub_confirmation=1" target="_blank" class="hidden md:inline-flex items-center gap-2 bg-white text-black text-xs font-semibold py-2.5 px-4.5 rounded-full hover:bg-neutral-200 transition-all">
+                <i data-lucide="play" class="w-3.5 h-3.5"></i> Subscribe
+            </a>
+            <button id="mobileToggle" class="md:hidden text-white p-2"><i data-lucide="menu" class="w-5 h-5"></i></button>
+        </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu md:hidden absolute top-full left-0 w-full nav-blur border-t border-white/5">
+        <div class="px-5 py-5 flex flex-col gap-3">
+            <a href="#home" class="text-neutral-300 hover:text-white py-2 text-sm" onclick="closeMobile()">Home</a>
+            <a href="#about" class="text-neutral-300 hover:text-white py-2 text-sm" onclick="closeMobile()">About</a>
+            <a href="#stats" class="text-neutral-300 hover:text-white py-2 text-sm" onclick="closeMobile()">Progress</a>
+            <a href="#services" class="text-neutral-300 hover:text-white py-2 text-sm" onclick="closeMobile()">Services</a>
+            <a href="#connect" class="text-neutral-300 hover:text-white py-2 text-sm" onclick="closeMobile()">Connect</a>
+            <a href="https://youtube.com/@joshtheofficial00?si=TkEWzNWCf7HlI-U1?sub_confirmation=1" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white text-black text-xs font-semibold py-3 px-5 rounded-full mt-1">
+                <i data-lucide="play" class="w-3.5 h-3.5"></i> Subscribe
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section id="home" class="hero-bg flex items-center justify-center">
+    <div class="relative z-10 text-center px-5 max-w-5xl mx-auto" style="padding-top:110px;padding-bottom:70px;">
+        <!-- Profile -->
+        <div class="mb-7 anim-fiu flex justify-center">
+            <div class="relative">
+                <div class="profile-container profile-img" style="width:110px;height:110px">
+                    <img src="myface.png" alt="Josh The Official" onerror="this.style.display='none'">
+                    <div class="profile-fallback text-3xl">J</div>
+                </div>
+                <div class="absolute -bottom-0.5 -right-0.5 w-7 h-7 bg-green-500 rounded-full border-3 border-[#050505] flex items-center justify-center" style="border-width:3px">
+                    <i data-lucide="music" class="w-3 h-3 text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- EQ Bars -->
+        <div class="flex items-end justify-center gap-1 mb-7 anim-fiu d1" style="height:36px">
+            <div class="eq-bar" style="animation-delay:0s;height:18px"></div>
+            <div class="eq-bar" style="animation-delay:.1s;height:28px"></div>
+            <div class="eq-bar" style="animation-delay:.2s;height:22px"></div>
+            <div class="eq-bar" style="animation-delay:.3s;height:32px"></div>
+            <div class="eq-bar" style="animation-delay:.15s;height:26px"></div>
+            <div class="eq-bar" style="animation-delay:.25s;height:30px"></div>
+            <div class="eq-bar" style="animation-delay:.05s;height:16px"></div>
+            <div class="eq-bar" style="animation-delay:.35s;height:24px"></div>
+            <div class="eq-bar" style="animation-delay:.12s;height:32px"></div>
+        </div>
+
+        <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-blue-400 mb-5 anim-fiu d2">
+            Music Producer · Artist · Beat Maker
+        </p>
+
+        <h1 class="text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight text-white leading-[1.05] mb-5 anim-fiu d3">
+            JOSH<br><span class="shimmer-text">THE OFFICIAL</span>
+        </h1>
+
+        <p class="text-base md:text-lg text-neutral-400 font-light max-w-xl mx-auto mb-9 leading-relaxed anim-fiu d4">
+            Rapper · Singer · Producer · Beat Maker<br>
+            Creating music across every genre — no limits, no boundaries.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 anim-fiu d5">
+            <a href="#connect" class="inline-flex items-center gap-2 bg-white text-black font-semibold py-3.5 px-7 rounded-full hover:bg-neutral-200 transition-all text-sm">
+                <i data-lucide="users" class="w-4 h-4"></i> Support the Journey
+            </a>
+            <a href="#stats" class="inline-flex items-center gap-2 bg-transparent border border-white/10 text-white font-semibold py-3.5 px-7 rounded-full hover:bg-white/5 transition-all text-sm">
+                <i data-lucide="trending-up" class="w-4 h-4"></i> View Progress
+            </a>
+        </div>
+
+        <div class="mt-10 anim-fiu d7">
+            <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2">
+                <span class="live-dot"></span>
+                <span class="text-[11px] text-neutral-400">Journey to <strong class="text-white">100K</strong> — <span id="heroTotal" class="text-blue-400 font-semibold">0</span> total supporters</span>
+            </div>
+        </div>
+
+        <div class="mt-8 anim-fiu d8">
+            <div class="flex flex-col items-center gap-1.5 text-neutral-600">
+                <span class="text-[9px] uppercase tracking-[0.2em]">Scroll</span>
+                <div class="w-4 h-7 border border-neutral-700 rounded-full flex items-start justify-center p-1">
+                    <div class="w-0.5 h-1.5 bg-neutral-500 rounded-full" style="animation:float 2s ease-in-out infinite"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Marquee -->
+<div class="relative overflow-hidden py-4 border-y border-white/5 bg-[#030303]">
+    <div class="marquee-track">
+        <span class="flex items-center gap-6 px-4 text-xs font-medium text-neutral-600 whitespace-nowrap">
+            <span class="flex items-center gap-1.5"><i data-lucide="mic" class="w-3.5 h-3.5 text-blue-500"></i> RAPPER</span><span>•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="music" class="w-3.5 h-3.5 text-purple-500"></i> SINGER</span><span>•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="sliders" class="w-3.5 h-3.5 text-blue-500"></i> PRODUCER</span><span>•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="drum" class="w-3.5 h-3.5 text-purple-500"></i> BEAT MAKER</span><span>•</span>
+            <span>🔥 JOSH THE OFFICIAL 🔥</span><span>•</span>
+        </span>
+        <span class="flex items-center gap-6 px-4 text-xs font-medium text-neutral-600 whitespace-nowrap">
+            <span class="flex items-center gap-1.5"><i data-lucide="mic" class="w-3.5 h-3.5 text-blue-500"></i> RAPPER</span><span>•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="music" class="w-3.5 h-3.5 text-purple-500"></i> SINGER</span><span>•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="sliders" class="w-3.5 h-3.5 text-blue-500"></i> PRODUCER</span><span>•</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="drum" class="w-3.5 h-3.5 text-purple-500"></i> BEAT MAKER</span><span>•</span>
+            <span>🔥 JOSH THE OFFICIAL 🔥</span><span>•</span>
+        </span>
+    </div>
+</div>
+
+<!-- ===== ABOUT ===== -->
+<section id="about" class="py-20 md:py-28 relative">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="max-w-6xl mx-auto px-5 relative">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="reveal">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400 mb-3">Who I Am</p>
+                <h2 class="text-3xl md:text-4xl font-medium tracking-tight text-white mb-5 leading-[1.1]">
+                    One Artist.<br><span class="text-neutral-500">Infinite Sounds.</span>
+                </h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-4">
+                    I'm Josh — known as <strong class="text-white">Josh The Official</strong>. I'm a music producer, artist, rapper, singer, and beat maker who refuses to be boxed into one genre. From hard-hitting rap beats to melodic R&B, from electronic vibes to acoustic soul — I create whatever the music demands.
+                </p>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-7">
+                    Every track is a piece of my journey. Every beat tells a story. My mission is to reach <strong class="text-blue-400">100,000 supporters</strong> on YouTube — and I'm grinding every single day to get there.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3.5 py-1.5 rounded-full text-[11px] font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">🎵 Music Producer</span>
+                    <span class="px-3.5 py-1.5 rounded-full text-[11px] font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">🎤 Rapper / Singer</span>
+                    <span class="px-3.5 py-1.5 rounded-full text-[11px] font-medium bg-green-500/10 text-green-400 border border-green-500/20">🥁 Beat Maker</span>
+                    <span class="px-3.5 py-1.5 rounded-full text-[11px] font-medium bg-orange-500/10 text-orange-400 border border-orange-500/20">🔥 Any Genre</span>
+                </div>
+            </div>
+            <div class="reveal" style="transition-delay:.2s">
+                <div class="profile-container-md">
+                    <img src="myface.png" alt="Josh The Official" onerror="this.style.display='none'">
+                    <div class="profile-fallback text-5xl">J</div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 pointer-events-none"></div>
+                    <div class="absolute bottom-5 left-5 right-5 z-20">
+                        <p class="text-white font-semibold">Josh The Official</p>
+                        <p class="text-neutral-400 text-xs">Multi-Genre Music Creator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== STATS / PROGRESS ===== -->
+<section id="stats" class="py-20 md:py-28 bg-[#030303] relative">
+    <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="max-w-6xl mx-auto px-5 relative">
+        <div class="text-center mb-14 reveal">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400 mb-3">The Journey to 100K</p>
+            <h2 class="text-3xl md:text-4xl font-medium tracking-tight text-white mb-3">Real Progress.<br><span class="text-neutral-500">Real Grind.</span></h2>
+            <p class="text-neutral-400 text-sm max-w-md mx-auto mb-2">Every follow, every subscribe, every share counts.</p>
+            <div class="inline-flex items-center gap-2 text-[10px] text-neutral-500">
+                <span class="live-dot"></span>
+                <span>Live data · Last sync: <span id="lastSync">—</span></span>
+            </div>
+        </div>
+
+        <!-- Main Goal: YouTube 100K -->
+        <div class="reveal mb-10">
+            <div class="glass rounded-2xl p-7 md:p-10 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-purple-500/5 pointer-events-none"></div>
+                <div class="relative flex flex-col md:flex-row items-center justify-center gap-10">
+                    <div class="goal-ring flex-shrink-0">
+                        <svg width="200" height="200" viewBox="0 0 200 200">
+                            <defs>
+                                <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#FF0000"/>
+                                    <stop offset="50%" style="stop-color:#a855f7"/>
+                                    <stop offset="100%" style="stop-color:#3b82f6"/>
+                                </linearGradient>
+                            </defs>
+                            <circle class="goal-ring-bg" cx="100" cy="100" r="85" fill="none" stroke-width="10"/>
+                            <circle id="goalRingFill" class="goal-ring-fill" cx="100" cy="100" r="85" fill="none" stroke-width="10" stroke-dasharray="534.07" stroke-dashoffset="534.07"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span id="goalRingPercent" class="text-3xl font-bold text-white">0%</span>
+                            <span class="text-[9px] text-neutral-500 uppercase tracking-wider">of 100K</span>
+                        </div>
+                    </div>
+                    <div class="text-center md:text-left">
+                        <div class="flex items-center gap-2 justify-center md:justify-start mb-1.5">
+                            <svg class="w-5 h-5 text-[#FF0000]" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/></svg>
+                            <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400">Main Goal — YouTube</p>
+                        </div>
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <span id="ytMainCount" class="text-4xl md:text-6xl font-bold text-white stat-number">0</span>
+                            <span class="text-xl text-neutral-500 font-light">/ 100,000</span>
+                        </div>
+                        <p class="text-neutral-500 text-xs mb-1">subscribers</p>
+                        <p class="text-neutral-500 text-[11px] mb-5 max-w-sm">Every subscriber brings me closer. Be part of the 100K journey.</p>
+                        <a href="https://youtube.com/@joshtheofficial00?si=TkEWzNWCf7HlI-U1?sub_confirmation=1" target="_blank" class="inline-flex items-center gap-2 bg-[#FF0000] text-white font-semibold py-2.5 px-5 rounded-full hover:bg-red-600 transition-all text-sm shadow-lg shadow-red-500/20">
+                            <i data-lucide="play" class="w-3.5 h-3.5"></i> Subscribe Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Cards -->
+        <div class="grid md:grid-cols-3 gap-4 mb-4">
+            <!-- YouTube -->
+            <div class="reveal glass rounded-2xl p-5 group hover:border-red-500/20 transition-all" style="transition-delay:.1s">
+                <div class="flex items-center gap-2.5 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-[#FF0000]/10 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-[#FF0000]" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/></svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-white font-semibold text-sm">YouTube</p>
+                        <p class="text-neutral-500 text-[10px] truncate">@joshtheofficial00</p>
+                    </div>
+                    <span class="flex items-center gap-1 text-[9px] text-green-400"><span class="live-dot" style="width:5px;height:5px"></span>LIVE</span>
+                </div>
+                <p class="text-3xl font-bold text-white mb-0.5 stat-number" data-platform="yt">—</p>
+                <p class="text-[10px] text-neutral-500 mb-3">subscribers · <span class="text-red-400 font-semibold">GOAL: 100K</span></p>
+                <div class="progress-track"><div class="progress-fill bg-[#FF0000]" data-bar="yt" style="width:0%;color:#FF0000"></div></div>
+                <a href="https://youtube.com/@joshtheofficial00?si=TkEWzNWCf7HlI-U1?sub_confirmation=1" target="_blank" class="inline-flex items-center gap-1 text-[11px] text-red-400 mt-3 hover:text-red-300 transition-colors">Subscribe <i data-lucide="external-link" class="w-2.5 h-2.5"></i></a>
+            </div>
+
+            <!-- Facebook -->
+            <div class="reveal glass rounded-2xl p-5 group hover:border-blue-500/20 transition-all" style="transition-delay:.2s">
+                <div class="flex items-center gap-2.5 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-[#1877F2]/10 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-white font-semibold text-sm">Facebook</p>
+                        <p class="text-neutral-500 text-[10px] truncate">Josh josh</p>
+                    </div>
+                    <span class="flex items-center gap-1 text-[9px] text-green-400"><span class="live-dot" style="width:5px;height:5px"></span>LIVE</span>
+                </div>
+                <p class="text-3xl font-bold text-white mb-0.5 stat-number" data-platform="fb">—</p>
+                <p class="text-[10px] text-neutral-500 mb-3">followers</p>
+                <div class="progress-track"><div class="progress-fill bg-[#1877F2]" data-bar="fb" style="width:0%;color:#1877F2"></div></div>
+                <a href="https://www.facebook.com/Joshtheofficial00/" target="_blank" class="inline-flex items-center gap-1 text-[11px] text-blue-400 mt-3 hover:text-blue-300 transition-colors">Follow <i data-lucide="external-link" class="w-2.5 h-2.5"></i></a>
+            </div>
+
+            <!-- TikTok -->
+            <div class="reveal glass rounded-2xl p-5 group hover:border-pink-400/20 transition-all" style="transition-delay:.3s">
+                <div class="flex items-center gap-2.5 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-pink-500/10 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-pink-400" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15.2a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.97a8.28 8.28 0 0 0 4.76 1.5V7.02a4.83 4.83 0 0 1-1-.33z"/></svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-white font-semibold text-sm">TikTok</p>
+                        <p class="text-neutral-500 text-[10px] truncate">Joshtheofficial00</p>
+                    </div>
+                    <span class="flex items-center gap-1 text-[9px] text-green-400"><span class="live-dot" style="width:5px;height:5px"></span>LIVE</span>
+                </div>
+                <p class="text-3xl font-bold text-white mb-0.5 stat-number" data-platform="tt">—</p>
+                <p class="text-[10px] text-neutral-500 mb-3">followers</p>
+                <div class="progress-track"><div class="progress-fill bg-gradient-to-r from-pink-500 to-violet-500" data-bar="tt" style="width:0%;color:#ec4899"></div></div>
+                <p class="text-[11px] text-neutral-600 mt-3">Follow on TikTok</p>
+            </div>
+        </div>
+
+        <!-- Instagram + SoundCloud -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="reveal glass rounded-2xl p-5 hover:border-pink-500/20 transition-all" style="transition-delay:.4s">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[#f09433]/10 to-[#bc1888]/10 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="instagram" class="w-5 h-5 text-pink-400"></i>
+                        </div>
+                        <div><p class="text-white font-semibold text-sm">Instagram</p><p class="text-neutral-500 text-[10px]">@josh.theofficial</p></div>
+                    </div>
+                    <a href="https://www.instagram.com/josh.theofficial" target="_blank" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#f09433]/10 to-[#bc1888]/10 text-pink-400 text-[11px] font-semibold py-2 px-4 rounded-full hover:from-[#f09433]/20 hover:to-[#bc1888]/20 transition-all border border-pink-500/10">Follow <i data-lucide="external-link" class="w-2.5 h-2.5"></i></a>
+                </div>
+            </div>
+            <div class="reveal glass rounded-2xl p-5 hover:border-orange-500/20 transition-all" style="transition-delay:.5s">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-lg bg-[#ff5500]/10 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="cloud" class="w-5 h-5 text-[#ff5500]"></i>
+                        </div>
+                        <div><p class="text-white font-semibold text-sm">SoundCloud</p><p class="text-neutral-500 text-[10px]">Joshtheofficial00</p></div>
+                    </div>
+                    <a href="https://on.soundcloud.com/ZoBHPAEsCeRqze0dlZ" target="_blank" class="inline-flex items-center gap-1.5 bg-[#ff5500]/10 text-[#ff5500] text-[11px] font-semibold py-2 px-4 rounded-full hover:bg-[#ff5500]/20 transition-all border border-orange-500/10">Follow <i data-lucide="external-link" class="w-2.5 h-2.5"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section id="services" class="py-20 md:py-28 relative">
+    <div class="absolute top-1/2 right-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="max-w-6xl mx-auto px-5 relative">
+        <div class="text-center mb-14 reveal">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400 mb-3">What I Do</p>
+            <h2 class="text-3xl md:text-4xl font-medium tracking-tight text-white mb-3">Services & <span class="text-neutral-500">Skills</span></h2>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="reveal glass rounded-2xl p-6 group hover:border-blue-500/20 transition-all" style="transition-delay:.05s">
+                <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:bg-blue-500/15 transition-all"><i data-lucide="sliders" class="w-5 h-5 text-blue-400"></i></div>
+                <h3 class="text-lg font-medium text-white mb-2">Music Production</h3>
+                <p class="text-neutral-400 text-xs leading-relaxed">Full-track production from concept to master. Any genre, any vibe — professional quality.</p>
+            </div>
+            <div class="reveal glass rounded-2xl p-6 group hover:border-purple-500/20 transition-all" style="transition-delay:.1s">
+                <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:bg-purple-500/15 transition-all"><i data-lucide="drum" class="w-5 h-5 text-purple-400"></i></div>
+                <h3 class="text-lg font-medium text-white mb-2">Beat Making</h3>
+                <p class="text-neutral-400 text-xs leading-relaxed">Hard-hitting drums, melodic loops, custom beats tailored to your style.</p>
+            </div>
+            <div class="reveal glass rounded-2xl p-6 group hover:border-green-500/20 transition-all" style="transition-delay:.15s">
+                <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4 group-hover:bg-green-500/15 transition-all"><i data-lucide="mic" class="w-5 h-5 text-green-400"></i></div>
+                <h3 class="text-lg font-medium text-white mb-2">Rap / Vocals</h3>
+                <p class="text-neutral-400 text-xs leading-relaxed">Versatile rap and vocal performances — introspective bars to high-energy bangers.</p>
+            </div>
+            <div class="reveal glass rounded-2xl p-6 group hover:border-pink-500/20 transition-all" style="transition-delay:.2s">
+                <div class="w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center mb-4 group-hover:bg-pink-500/15 transition-all"><i data-lucide="music" class="w-5 h-5 text-pink-400"></i></div>
+                <h3 class="text-lg font-medium text-white mb-2">Singing</h3>
+                <p class="text-neutral-400 text-xs leading-relaxed">Melodic hooks, soulful verses, and harmonies that stick. Emotion in every note.</p>
+            </div>
+            <div class="reveal glass rounded-2xl p-6 group hover:border-yellow-500/20 transition-all" style="transition-delay:.25s">
+                <div class="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-4 group-hover:bg-yellow-500/15 transition-all"><i data-lucide="pen-tool" class="w-5 h-5 text-yellow-400"></i></div>
+                <h3 class="text-lg font-medium text-white mb-2">Songwriting</h3>
+                <p class="text-neutral-400 text-xs leading-relaxed">Story-driven lyrics with authentic emotion and real perspective.</p>
+            </div>
+            <div class="reveal glass rounded-2xl p-6 group hover:border-orange-500/20 transition-all" style="transition-delay:.3s">
+                <div class="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:bg-orange-500/15 transition-all"><i data-lucide="infinity" class="w-5 h-5 text-orange-400"></i></div>
+                <h3 class="text-lg font-medium text-white mb-2">Any Genre</h3>
+                <p class="text-neutral-400 text-xs leading-relaxed">Hip-Hop, R&B, Pop, Trap, Drill, Afrobeats, Lo-Fi — no limits.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== GENRES ===== -->
+<section class="py-20 md:py-28 bg-[#030303] relative overflow-hidden">
+    <div class="max-w-6xl mx-auto px-5">
+        <div class="text-center mb-14 reveal">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400 mb-3">Genre Spectrum</p>
+            <h2 class="text-3xl md:text-4xl font-medium tracking-tight text-white">No Boundaries</h2>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2.5 reveal">
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">🎤 Hip-Hop</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">🎹 R&B</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">🔥 Trap</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">💥 Drill</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">🎵 Pop</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">🌍 Afrobeats</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">🌙 Lo-Fi</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">⚡ Electronic</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">🎸 Rock</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">🎶 Soul</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">🎧 Dancehall</span>
+            <span class="px-4 py-2 rounded-full glass text-xs text-white font-medium hover:bg-white/10 transition-all cursor-default">🫶 Gospel</span>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA / CONNECT ===== -->
+<section id="connect" class="py-20 md:py-28 bg-[#020202] relative">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[150px]"></div>
+    </div>
+    <div class="max-w-3xl mx-auto px-5 text-center relative">
+        <div class="reveal">
+            <div class="mb-6 flex justify-center">
+                <div class="profile-container profile-img" style="width:90px;height:90px">
+                    <img src="myface.png" alt="Josh" onerror="this.style.display='none'">
+                    <div class="profile-fallback text-2xl">J</div>
+                </div>
+            </div>
+            <div class="flex items-end justify-center gap-1 mb-6" style="height:36px">
+                <div class="eq-bar" style="animation-delay:.1s;height:18px"></div>
+                <div class="eq-bar" style="animation-delay:.2s;height:28px"></div>
+                <div class="eq-bar" style="animation-delay:.05s;height:22px"></div>
+                <div class="eq-bar" style="animation-delay:.3s;height:32px"></div>
+                <div class="eq-bar" style="animation-delay:.15s;height:26px"></div>
+            </div>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400 mb-3">Join the Journey</p>
+            <h2 class="text-3xl md:text-5xl font-medium tracking-tight text-white mb-5">Be Part of the<br><span class="shimmer-text">100K Movement</span></h2>
+            <p class="text-neutral-400 text-base font-light max-w-lg mx-auto mb-10 leading-relaxed">
+                Every follow, like, share, and subscribe brings me closer to the dream. Ride with me.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10 reveal" style="transition-delay:.2s">
+            <a href="https://www.facebook.com/Joshtheofficial00/" target="_blank" class="glass rounded-xl p-4 flex flex-col items-center gap-1.5 hover:bg-white/5 hover:border-[#1877F2]/20 transition-all">
+                <svg class="w-6 h-6 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                <span class="text-white text-[11px] font-medium">Facebook</span>
+                <span class="text-neutral-500 text-[9px]">Follow</span>
+            </a>
+            <a href="https://www.instagram.com/josh.theofficial" target="_blank" class="glass rounded-xl p-4 flex flex-col items-center gap-1.5 hover:bg-white/5 hover:border-pink-500/20 transition-all">
+                <i data-lucide="instagram" class="w-6 h-6 text-pink-400"></i>
+                <span class="text-white text-[11px] font-medium">Instagram</span>
+                <span class="text-neutral-500 text-[9px]">Follow</span>
+            </a>
+            <a href="https://on.soundcloud.com/ZoBHPAEsCeRqze0dlZ" target="_blank" class="glass rounded-xl p-4 flex flex-col items-center gap-1.5 hover:bg-white/5 hover:border-orange-500/20 transition-all">
+                <i data-lucide="cloud" class="w-6 h-6 text-[#ff5500]"></i>
+                <span class="text-white text-[11px] font-medium">SoundCloud</span>
+                <span class="text-neutral-500 text-[9px]">Follow</span>
+            </a>
+            <a href="https://youtube.com/@joshtheofficial00?si=TkEWzNWCf7HlI-U1?sub_confirmation=1" target="_blank" class="glass rounded-xl p-4 flex flex-col items-center gap-1.5 hover:bg-white/5 hover:border-red-500/20 transition-all">
+                <i data-lucide="youtube" class="w-6 h-6 text-red-500"></i>
+                <span class="text-white text-[11px] font-medium">YouTube</span>
+                <span class="text-neutral-500 text-[9px]">Subscribe</span>
+            </a>
+            <a href="#" class="glass rounded-xl p-4 flex flex-col items-center gap-1.5 hover:bg-white/5 hover:border-pink-400/20 transition-all col-span-2 md:col-span-1">
+                <svg class="w-6 h-6 text-pink-400" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15.2a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.97a8.28 8.28 0 0 0 4.76 1.5V7.02a4.83 4.83 0 0 1-1-.33z"/></svg>
+                <span class="text-white text-[11px] font-medium">TikTok</span>
+                <span class="text-neutral-500 text-[9px]">Follow</span>
+            </a>
+        </div>
+
+        <div class="reveal" style="transition-delay:.4s">
+            <button onclick="showToast()" class="inline-flex items-center gap-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3.5 px-8 rounded-full hover:from-blue-500 hover:to-purple-500 transition-all text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40">
+                <i data-lucide="heart" class="w-4 h-4"></i> Support Josh The Official
+            </button>
+            <p class="text-neutral-600 text-[10px] mt-5">Your support means everything. Every follow counts. 🙏</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="py-10 border-t border-white/5 bg-[#050505]">
+    <div class="max-w-6xl mx-auto px-5">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-5">
+            <div class="flex items-center gap-2.5">
+                <div class="profile-container-xs">
+                    <img src="myface.png" alt="Josh" onerror="this.style.display='none'">
+                    <div class="profile-fallback text-[10px]">J</div>
+                </div>
+                <span class="text-white font-medium text-sm">Josh The Official</span>
+            </div>
+            <div class="flex items-center gap-5">
+                <a href="https://www.facebook.com/Joshtheofficial00/" target="_blank" class="text-neutral-500 hover:text-[#1877F2] transition-colors"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                <a href="https://www.instagram.com/josh.theofficial" target="_blank" class="text-neutral-500 hover:text-pink-400 transition-colors"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+                <a href="https://on.soundcloud.com/ZoBHPAEsCeRqze0dlZ" target="_blank" class="text-neutral-500 hover:text-[#ff5500] transition-colors"><i data-lucide="cloud" class="w-4 h-4"></i></a>
+                <a href="https://youtube.com/@joshtheofficial00?si=TkEWzNWCf7HlI-U1?sub_confirmation=1" target="_blank" class="text-neutral-500 hover:text-red-400 transition-colors"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+            </div>
+            <p class="text-neutral-600 text-[10px]">© 2025 Josh The Official. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+lucide.createIcons();
+
+// Check if hero bg image loads
+const bgImg = new Image();
+bgImg.onload = function() { document.querySelector('.hero-bg').classList.add('img-loaded'); };
+bgImg.src = 'Joshtheofficial00.png';
+
+// ===== DATA =====
+const P = { yt:{count:28,goal:100000}, fb:{count:59,goal:100000}, tt:{count:32,goal:100000} };
+const YT_CH = 'joshtheofficial00';
+
+// Cache
+function loadCache(){
+    try{const c=localStorage.getItem('jstats3');if(c){const p=JSON.parse(c);if(p.fb&&p.fb.count>P.fb.count)P.fb.count=p.fb.count;if(p.tt&&p.tt.count>P.tt.count)P.tt.count=p.tt.count;if(p.yt&&p.yt.count&&P.yt.count===null)P.yt.count=p.yt.count;}}catch(e){}
+}
+function saveCache(){try{localStorage.setItem('jstats3',JSON.stringify(P));localStorage.setItem('jlast',new Date().toISOString());}catch(e){}}
+
+// Fetch YT
+async function fetchYT(){
+    try{
+        const r=await fetch(`https://api.socialcounts.org/youtube-live-subscriber-count/@${YT_CH}`,{mode:'cors',signal:AbortSignal.timeout(5000)});
+        if(r.ok){const d=await r.json();if(d&&d.count!==undefined){P.yt.count=parseInt(d.count);return;}}
+    }catch(e){}
+    if(P.yt.count===null){const c=localStorage.getItem('jyt');if(c)P.yt.count=parseInt(c);else P.yt.count=0;}
+}
+
+// Animate counter
+function anim(el,target,dur=1500){
+    const s=parseInt(el.textContent.replace(/,/g,''))||0;
+    if(s===target){el.textContent=target.toLocaleString();return;}
+    const t0=performance.now();
+    function u(t){const p=Math.min((t-t0)/dur,1);const e=1-Math.pow(1-p,3);el.textContent=Math.round(s+(target-s)*e).toLocaleString();if(p<1)requestAnimationFrame(u);}
+    requestAnimationFrame(u);
+}
+
+// Update UI
+function updateUI(){
+    const yt=P.yt.count||0,fb=P.fb.count||0,tt=P.tt.count||0;
+    const total=yt+fb+tt;
+    document.getElementById('heroTotal').textContent=total.toLocaleString();
+
+    const ytEl=document.getElementById('ytMainCount');
+    const oldYt=parseInt(ytEl.textContent.replace(/,/g,''))||0;
+    if(oldYt!==yt)anim(ytEl,yt);
+
+    const pct=(yt/P.yt.goal)*100;
+    const circ=2*Math.PI*85;
+    document.getElementById('goalRingFill').style.strokeDashoffset=Math.max(0,circ-(pct/100*circ));
+    document.getElementById('goalRingPercent').textContent=pct.toFixed(2)+'%';
+
+    document.querySelectorAll('[data-platform]').forEach(el=>{
+        const k=el.dataset.platform;const d=P[k];
+        if(d&&d.count!==null){const old=parseInt(el.textContent.replace(/,/g,''));if(isNaN(old)||old!==d.count)anim(el,d.count,1000);}
+    });
+
+    const yb=document.querySelector('[data-bar="yt"]');if(yb)yb.style.width=Math.min(pct,100)+'%';
+    const fbb=document.querySelector('[data-bar="fb"]');if(fbb)fbb.style.width=Math.min((fb/P.fb.goal)*100,100)+'%';
+    const ttb=document.querySelector('[data-bar="tt"]');if(ttb)ttb.style.width=Math.min((tt/P.tt.goal)*100,100)+'%';
+
+    const now=new Date();
+    document.getElementById('lastSync').textContent=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    localStorage.setItem('jyt',yt.toString());
+    saveCache();
+}
+
+// Scroll trigger
+const statsEl=document.getElementById('stats');
+let statsRan=false;
+const sObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!statsRan){statsRan=true;loadCache();updateUI();}});},{threshold:.15});
+sObs.observe(statsEl);
+
+// Reveal
+const rObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>rObs.observe(el));
+
+// Mobile menu
+let mOpen=false;
+document.getElementById('mobileToggle').addEventListener('click',()=>{mOpen=!mOpen;document.getElementById('mobileMenu').classList.toggle('open',mOpen);});
+function closeMobile(){mOpen=false;document.getElementById('mobileMenu').classList.remove('open');}
+
+// Toast
+function showToast(){const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+
+// Auto-refresh
+setInterval(async()=>{await fetchYT();updateUI();},60000);
+
+// Manual updater
+statsEl.addEventListener('dblclick',()=>{
+    const yn=parseInt(prompt('YouTube subscribers:',P.yt.count||0));
+    const fn=parseInt(prompt('Facebook followers:',P.fb.count));
+    const tn=parseInt(prompt('TikTok followers:',P.tt.count));
+    if(!isNaN(yn))P.yt.count=yn;if(!isNaN(fn))P.fb.count=fn;if(!isNaN(tn))P.tt.count=tn;
+    updateUI();
+    document.querySelectorAll('[data-platform]').forEach(el=>{const d=P[el.dataset.platform];if(d&&d.count!==null)anim(el,d.count,600);});
+    anim(document.getElementById('ytMainCount'),P.yt.count,600);
+});
+
+// Init
+loadCache();
+fetchYT().then(()=>{const total=(P.yt.count||0)+P.fb.count+P.tt.count;document.getElementById('heroTotal').textContent=total.toLocaleString();});
+</script>
+</body>
+</html>
