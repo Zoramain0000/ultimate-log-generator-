@@ -1,7 +1,7 @@
 import random
 import time
 import csv
-from datetime import datetime, timedelta
+import os
 
 # --- 1. Configuration & Databases ---
 
@@ -200,7 +200,6 @@ countries_data = [
     {"name": "Zimbabwe", "code": "+263", "city": "Harare", "port": 8080, "type": "cctv"}
 ]
 
-# Databases
 browsers = [
     {"name": "Chrome", "versions": ["114.0.5748.166", "115.0.5749.167", "116.0.5845.96", "117.0.5938.92", "118.0.5993.88"]},
     {"name": "Firefox", "versions": ["114.0.2", "115.0.3", "116.0.1", "117.0", "118.0"]},
@@ -323,7 +322,6 @@ current_country_obj = None
 country_map = {c["name"]: c for c in countries_data}
 
 def create_row(entry):
-    # Simulating HTML creation
     return f"""
     IP: <span class="highlight-red">{entry['ip']}</span>
     Country: {entry['country']}
@@ -375,16 +373,6 @@ def load_more_logs():
     print(f"[RESULT] Added {len(batch)} rows. Total: {total_logs_generated}")
     return True
 
-def filter_logs(search_term):
-    if not search_term:
-        print("[FILTER] Reset display to all rows.")
-        return all_entries
-    
-    print(f"[FILTER] Searching for: '{search_term}'")
-    filtered = [row for row in all_entries if search_term.lower() in row["ip"].lower() or search_term.lower() in row["country"].lower()]
-    print(f"[RESULT] Found {len(filtered)} matching rows.")
-    return filtered
-
 def export_csv(filename=None):
     if not filename:
         filename = f"cctv_global_monitor_{current_country_obj['code']}.csv"
@@ -418,100 +406,53 @@ def export_csv(filename=None):
 
 # --- 4. Initialization & Interaction ---
 
-def populate_countries():
-    # Simulates: populateCountries
-    print("[INIT] Populating Country List...")
-    print("------------------------------------------------")
-    for c in countries_data[:5]: # Print first 5 as example
-        print(f"  - {c['name']} [{c['code']} - Port:{c['port']}]")
-    print("------------------------------------------------")
-    print(f"[INIT] Total Countries Loaded: {len(countries_data)}")
+def select_random_region():
+    # Automatically picks a random region
+    global current_country_obj
+    idx = rand_int(0, len(countries_data) - 1)
+    current_country_obj = countries_data[idx]
+    print(f"[SYSTEM] Auto-selected Region: {current_country_obj['name']} ({current_country_obj['code']})")
+    return current_country_obj
 
 def main_menu():
-    print("\n=== GLOBAL NETSEC MONITOR (Python v2.1) ===")
-    print("1. Select Region")
-    print("2. Select Source Type")
-    print("3. Inject Data (Generate Logs)")
-    print("4. Filter / Search")
-    print("5. Export Report")
-    print("6. Reset & Restart")
-    print("0. Exit")
+    print("\n=== GLOBAL NETSEC MONITOR (Auto-Scroll Mode) ===")
+    print("Current Region: " + str(current_country_obj['name']) if current_country_obj else "[WAIT] Select Region")
+    print("Current Source: " + str(current_country_obj['type']) if current_country_obj else "[WAIT] Select Source")
+    print("------------------------------------------------")
+    print("Commands:")
+    print("  195 - Inject Next Batch (Load 50 logs)")
+    print("  0   - Export CSV Report")
+    print("  q   - Quit")
+    print("------------------------------------------------")
     
-    choice = input("\nEnter Command [0-6]: ").strip()
-    
-    if choice == "1":
-        print("\nAvailable Regions:")
-        for i, c in enumerate(countries_data[:10]):
-            print(f"{i+1}. {c['name']} ({c['code']})")
-        print(f"   ... and {len(countries_data)-10} more.")
-        try:
-            idx = int(input("Select number: "))
-            if 1 <= idx <= len(countries_data):
-                global current_country_obj
-                current_country_obj = countries_data[idx-1]
-                print(f"[SELECT] Region Set: {current_country_obj['name']}")
-            else:
-                print("[ERROR] Invalid selection.")
-        except ValueError:
-            print("[ERROR] Please enter a number.")
-    
-    elif choice == "2":
-        print("\nSource Types:")
-        for i, t in enumerate(source_types[:8]):
-            print(f"{i+1}. {t}")
-        try:
-            idx = int(input("Select number: "))
-            if 1 <= idx <= len(source_types):
-                print(f"[SELECT] Source Type: {source_types[idx-1]}")
-            else:
-                print("[ERROR] Invalid selection.")
-        except ValueError:
-            print("[ERROR] Please enter a number.")
-
-    elif choice == "3":
-        if not current_country_obj:
-            print("[ERROR] Please select a region first (Command 1).")
-            return
-        load_more_logs()
-        input("Press Enter to generate more...")
+    if not current_country_obj:
+        print("\n[START] Press Enter to select a random region and start...")
+        input()
+        select_random_region()
         load_more_logs()
 
-    elif choice == "4":
-        term = input("Enter Search Term (IP/Name/Num): ").strip()
-        filter_logs(term)
-
-    elif choice == "5":
+    command = input("\nType '195' to load more logs, '0' to export, or 'q' to quit: ").strip()
+    
+    if command == "195":
+        load_more_logs()
+        # Small delay to allow terminal buffer to clear
+        time.sleep(0.1)
+        
+    elif command == "0":
         export_csv()
+        
+    elif command == "q":
+        print("[QUIT] Closing Session...")
+        return True
 
-    elif choice == "6":
-        print("[RESET] Clearing memory...")
-        global total_logs_generated, all_entries
-        total_logs_generated = 0
-        all_entries = []
-        print("[OK] Ready to restart.")
-
-    elif choice == "0":
-        print("[EXIT] Closing Session...")
-        return
-
-    else:
-        print("[ERROR] Unknown command.")
-
-    main_menu()
+    return False
 
 # --- Start ---
 
 if __name__ == "__main__":
-    populate_countries()
-    # Initial Load Simulation
     print("[INIT] Starting Stream Simulation...")
-    input("Press Enter to Start Injection...")
-    
-    if current_country_obj:
-        load_more_logs()
-    else:
-        print("[WAIT] Select a region first, then press Enter.")
-        input("Press Enter to continue...")
-        load_more_logs()
-
-    main_menu()
+    try:
+        while not main_menu():
+            continue
+    except KeyboardInterrupt:
+        print("\n[INTERRUPT] Stopped by user.")
